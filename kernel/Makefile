@@ -1,3 +1,4 @@
+CC = gcc-7
 CFLAGS = -Wall -Wextra -nostdinc -nostdlib -fno-builtin -fno-common
 LDFLAGS = -s -x
 
@@ -18,13 +19,13 @@ apps/app3: apps/app3.o
 	ld $(LDFLAGS) -T apps/app3.ld -o $@ $+
 
 %.o: %.c
-	gcc $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 apps/%.o: apps/%.c
-	gcc $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 %.o:%.s
-	gcc $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 qemu: kernel apps/app1 apps/app2 apps/app3
 	make all
