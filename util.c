@@ -40,6 +40,7 @@ UINT8 compare_guid(struct EFI_GUID *guid1, struct EFI_GUID *guid2) {
   return 1;
 }
 
+// For Print Debug
 void assert(EFI_STATUS status, CHAR16 *msg) {
   if (status != EFI_SUCCESS) {
     puts(msg);
