@@ -10,7 +10,10 @@ void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_har
   // To here - Put this part at the top of start() function
 
   init_frame_buffer(&(hardware_info.fb));
-  puts("System\nProgramming\nLab");
+  puts("System\nProgramming\nLab\n");
+  puts("System\nProgramming\nLab\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n");
+  puts("This text is not shown\r");
+  puth(12345678, '9');
   // Delete me. I'm a sample code.
   // for (unsigned int i = 0; i < hardware_info.fb.height; i++) {
   //   for (unsigned int j = 0; j < hardware_info.fb.width; j++) {

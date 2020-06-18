@@ -10,28 +10,42 @@ struct FrameBuffer *FB;
 unsigned int fb_y;
 unsigned fb_x;
 
-void paint_char(struct Pixel *pixel)
+unsigned long long
+pow(unsigned int x, unsigned int n)
+{
+    unsigned long long ret = 1;
+
+    for (; n > 0; n--) ret = ret*x;
+
+    return ret;
+}
+
+void
+paint_char(struct Pixel *pixel)
 {
     pixel->r = 255;
     pixel->g = 255;
     pixel->b = 253;
 }
 
-void paint_null(struct Pixel *pixel)
+void
+paint_null(struct Pixel *pixel)
 {
     pixel->r = 0;
     pixel->g = 0;
     pixel->b = 0;
 }
 
-void check_coordinate(void)
+void
+check_coordinate(void)
 {
-    if (fb_x >= FB->width) {fb_x = 0; fb_y++;}
+    if (fb_x >= FB->width) {fb_x = 0; fb_y += FONT_HEIGHT;}
 
     if (fb_y >= FB->height) init_frame_buffer(FB);
 }
 
-void init_frame_buffer(struct FrameBuffer *fb)
+void
+init_frame_buffer(struct FrameBuffer *fb)
 {
     FB = fb;
 
@@ -48,7 +62,8 @@ void init_frame_buffer(struct FrameBuffer *fb)
     return;
 }
 
-static void putc(char c)
+static void
+putc(char c)
 {
     if (c == '\r')
     {
@@ -95,12 +110,34 @@ static void putc(char c)
     return;
 }
 
-void puts(char *str)
+void
+puts(char *str)
 {
     while (*(str) != '\0')
     {
         putc(*str);
         str++;
+    }
+
+    return;
+}
+
+void
+puth(unsigned long long value, unsigned char digits_len)
+{
+    /* Error Handler */
+    if (!((int) digits_len >= 48 || (int) digits_len <= 57)) return;
+
+    unsigned int len = (int) digits_len - 48;
+
+    puts("0x");
+
+    for (; len > 0; len--)
+    {
+        unsigned char num = value/pow(16, len-1)%16;
+
+        if (num <= 9) putc(num+48);
+        else putc(num+55);
     }
 
     return;
