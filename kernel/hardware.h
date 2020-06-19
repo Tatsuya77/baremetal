@@ -30,6 +30,7 @@ struct SDTH {
 // other_tables is an array with variable length, so not included in struct definition
 struct XSDT {
   struct SDTH sdth;
+  /* Unknown Table Numbers */
   // unsinged long long other_tables[]
 } __attribute__((packed));
 

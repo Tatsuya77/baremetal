@@ -1,6 +1,7 @@
 #include "hardware.h"
 #include "segmentation.h"
 #include "util.h"
+#include "pm_timer.h"
 
 void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_hardware_info) {
   // From here - Put this part at the top of start() function
@@ -10,10 +11,12 @@ void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_har
   // To here - Put this part at the top of start() function
 
   init_frame_buffer(&(hardware_info.fb));
-  puts("System\nProgramming\nLab\n");
-  puts("System\nProgramming\nLab\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n");
-  puts("This text is not shown\r");
-  puth(12345678, '9');
+  init_acpi_pm_timer(hardware_info.rsdp);
+
+  puts("start\n");
+  pm_timer_wait_millisec(10000);
+  puts("end\n");
+
   // Delete me. I'm a sample code.
   // for (unsigned int i = 0; i < hardware_info.fb.height; i++) {
   //   for (unsigned int j = 0; j < hardware_info.fb.width; j++) {

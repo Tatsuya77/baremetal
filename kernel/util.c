@@ -142,3 +142,17 @@ puth(unsigned long long value, unsigned char digits_len)
 
     return;
 }
+
+int
+strcmp(char *s1, char *s2)
+{
+    for (; *s1 == *s2 && *s1 != '\0' && *s2 != '\0'; s1++,s2++);
+    return *s1 - *s2;
+}
+
+int
+strncmp(int n, char *s1, char *s2)
+{
+    for (; *s1 == *s2 && *s1 != '\0' && *s2 != '\0' && n>1; s1++,s2++,n--);
+    return *s1 - *s2;
+}

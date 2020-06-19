@@ -1,0 +1,15 @@
+入力関数:
+    puts("start\n");
+    pm_timer_wait_millisec(10000);
+    puts("end\n");
+出力結果:
+　　start
+    end (10秒ほど経過してから出力された)
+
+考察:
+    FADT構造体のアドレスの取得:
+        スライドのように習って,hardwareinfoからポインタをたどっていった.XSDT構造体のlengthメンバーの情報を用いて,other_tablesの大きさを計算し,先頭のsignatureメンバーが"FACP"となるかどうかでFADT構造体かどうかを判定した.そのアドレスを用いて,オフセットによってpm_timer_blkとpm_timer_is_32を取得した.pm_timer_is_32は,フラグ群の下から8bit目を読んだ.
+    portmapped IO:
+        port_io.sファイルを新たに作成し,スライドのアセンブリコードを参考にタイマのカウンタを取得するload_tmr関数を定義した.
+    pm_timer_wait_millisec関数:
+        タイマのカウンタのビット数の制限により,キャリーを計算する必要がある.キャリーは直前のカウンタを新しいカウンタの値が下回った場合で判定した.カウンタの周波数を用いてカウンタをポーリングし,引数の時間waitするように実装した.
