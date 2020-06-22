@@ -2,6 +2,7 @@
 #include "segmentation.h"
 #include "util.h"
 #include "pm_timer.h"
+#include "lapic_timer.h"
 
 void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_hardware_info) {
   // From here - Put this part at the top of start() function
@@ -13,21 +14,20 @@ void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_har
   init_frame_buffer(&(hardware_info.fb));
   init_acpi_pm_timer(hardware_info.rsdp);
 
-  puts("start\n");
-  pm_timer_wait_millisec(10000);
-  puts("end\n");
+  /* kadaiA sample codes */
+  puts("System\nProgramming\nLab\n");
+  puts("This text is not shown\r");
+  puth(12345678, 9);
+  puts("\n");
 
-  // Delete me. I'm a sample code.
-  // for (unsigned int i = 0; i < hardware_info.fb.height; i++) {
-  //   for (unsigned int j = 0; j < hardware_info.fb.width; j++) {
-  //     struct Pixel *pixel = hardware_info.fb.base + hardware_info.fb.width * i + j;
-  //     // † AYAME †
-  //     pixel->r = 111;
-  //     pixel->g = 51;
-  //     pixel->b = 129;
-  //   }
-  // }
-  // To here - sample code
+  /* kadaiB1 sample codes */
+  puts("wait: start\n");
+  pm_timer_wait_millisec(10000);
+  puts("wait: end\n");
+
+  /* kadaiB2 sample codes */
+  puth(measure_lapic_freq_khz(), 8);
+  puts("\n");
 
   // Do not delete it!
   while (1);

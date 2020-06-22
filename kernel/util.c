@@ -125,10 +125,7 @@ puts(char *str)
 void
 puth(unsigned long long value, unsigned char digits_len)
 {
-    /* Error Handler */
-    if (!((int) digits_len >= 48 || (int) digits_len <= 57)) return;
-
-    unsigned int len = (int) digits_len - 48;
+    unsigned int len = (int) digits_len;
 
     puts("0x");
 
