@@ -31,6 +31,8 @@ void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_har
   puth(measure_lapic_freq_khz(), 8);
   puts("\n");
 
+  lapic_periodic_exec(4000, &puth);
+
   // Do not delete it!
   while (1);
 }
