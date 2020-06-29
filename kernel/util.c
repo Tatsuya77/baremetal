@@ -127,7 +127,7 @@ puth(unsigned long long value, unsigned char digits_len)
 {
     unsigned int len = (int) digits_len;
 
-    puts("0x");
+    // puts("0x");
 
     for (; len > 0; len--)
     {

@@ -27,3 +27,9 @@ unsigned int measure_lapic_freq_khz(void)
 
     return lapic_timer_freq_khz;
 }
+
+/* dummy */
+void lapic_intr_handler(void)
+{
+    return;
+}

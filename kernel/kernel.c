@@ -3,6 +3,7 @@
 #include "util.h"
 #include "pm_timer.h"
 #include "lapic_timer.h"
+#include "interruption.h"
 
 void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_hardware_info) {
   // From here - Put this part at the top of start() function
@@ -13,6 +14,7 @@ void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_har
 
   init_frame_buffer(&(hardware_info.fb));
   init_acpi_pm_timer(hardware_info.rsdp);
+  init_intr();
 
   /* kadaiA sample codes */
   puts("System\nProgramming\nLab\n");
