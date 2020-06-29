@@ -10,6 +10,9 @@ volatile unsigned int *initial_count = (unsigned int *)0xfee00380;
 volatile unsigned int *current_count = (unsigned int *)0xfee00390;
 volatile unsigned int *divide_config = (unsigned int *)0xfee003e0;
 
+volatile unsigned int *lapic_eoi = (unsigned int *)0xfee000b0;
+void *fun;
+
 unsigned int lapic_timer_freq_khz;
 
 unsigned int measure_lapic_freq_khz(void)
@@ -26,4 +29,25 @@ unsigned int measure_lapic_freq_khz(void)
     lapic_timer_freq_khz =  (*initial_count - *current_count) / (measure_time / 1000) / 1000;
 
     return lapic_timer_freq_khz;
+}
+
+void lapic_periodic_exec(unsigned int msec, void *callback)
+{
+    *lvt_timer = 0b0100000000010000000;
+    *divide_config = 0b1111;
+
+    fun = callback;
+
+    *initial_count = lapic_timer_freq_khz * msec;
+
+    return;
+}
+
+void lapic_intr_handler_internal(void)
+{
+    // puts("ok\n");
+
+    *lapic_eoi = 0;
+
+    return;
 }
