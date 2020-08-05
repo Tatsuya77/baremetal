@@ -1,0 +1,20 @@
+出力結果:
+    START
+    HELLO FROM TASK0
+    HELLO FROM TASK0
+    HELLO FROM TASK0
+    HELLO FROM TASK1
+    HELLO FROM TASK1
+    HELLO FROM TASK1
+    HELLO FROM TASK2
+    HELLO FROM TASK2
+    HELLO FROM TASK2
+    HELLO FROM TASK0
+    HELLO FROM TASK0
+    HELLO FROM TASK1
+    HELLO FROM TASK1
+    HELLO FROM TASK1
+    ...
+考察:
+    schedularが実装できているかの確認として,スライドの通りに3つのtaskをラウンドロビンで非同期で切り替えるschedule関数を実装した.
+    各タスクの出力の行数が時々異なることから,非同期にコンテキストスイッチが行えていることが確認できる.

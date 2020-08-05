@@ -4,6 +4,7 @@
 #include "pm_timer.h"
 #include "lapic_timer.h"
 #include "interruption.h"
+#include "sched.h"
 
 void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_hardware_info) {
   // From here - Put this part at the top of start() function
@@ -15,14 +16,32 @@ void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_har
   init_frame_buffer(&(hardware_info.fb));
   init_acpi_pm_timer(hardware_info.rsdp);
   init_intr();
-  puts("init\n");
 
-  puts("khz: ");
-  puth(measure_lapic_freq_khz(), 9);
-  puts("\n");
+  measure_lapic_freq_khz();
 
-  lapic_periodic_exec(4000, &init_frame_buffer);
-  puts("exec\n");
+  /* 7 */
+      // /* kadaiA sample codes */
+      // puts("System\nProgramming\nLab\n");
+      // puts("This text is not shown\r");
+      // puth(12345678, 9);
+      // puts("\n");
+
+      // /* kadaiB1 sample codes */
+      // puts("wait: start\n");
+      // pm_timer_wait_millisec(10000);
+      // puts("wait: end\n");
+
+      // /* kadaiB2 sample codes */
+      // puth(measure_lapic_freq_khz(), 8);
+      // puts("\n");
+
+  /* 8 */
+  puts("start\n");
+  void *handler;
+  asm volatile ("lea schedule(%%rip), %[handler]" : [handler]"=r"(handler));
+  lapic_periodic_exec(1000, handler);
+  init_tasks();
+  puts("end\n");
 
   // Do not delete it!
   while (1);

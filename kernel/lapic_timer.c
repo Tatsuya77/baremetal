@@ -2,16 +2,17 @@
  * lapic_timer.c
  */
 
+#include "hardware.h"
+#include "util.h"
 #include "lapic_timer.h"
 #include "pm_timer.h"
+#include "sched.h"
 
 volatile unsigned int *lvt_timer = (unsigned int *)0xfee00320;
 volatile unsigned int *initial_count = (unsigned int *)0xfee00380;
 volatile unsigned int *current_count = (unsigned int *)0xfee00390;
 volatile unsigned int *divide_config = (unsigned int *)0xfee003e0;
-
 volatile unsigned int *lapic_eoi = (unsigned int *)0xfee000b0;
-void *fun;
 
 unsigned int lapic_timer_freq_khz;
 
@@ -31,23 +32,29 @@ unsigned int measure_lapic_freq_khz(void)
     return lapic_timer_freq_khz;
 }
 
+void (*reserved_callback)(unsigned long long);
+
+void lapic_set_eoi() {
+    *lapic_eoi = 0;
+}
+
 void lapic_periodic_exec(unsigned int msec, void *callback)
 {
-    *lvt_timer = 0b0100000000010000000;
+    *lvt_timer = 0b0100000000000100000;
     *divide_config = 0b1111;
 
-    fun = callback;
+    reserved_callback = callback;
 
     *initial_count = lapic_timer_freq_khz * msec;
 
     return;
 }
 
-void lapic_intr_handler_internal(void)
+void lapic_intr_handler_internal(unsigned long long arg1)
 {
-    // puts("ok\n");
+    (*reserved_callback)(arg1);
 
-    *lapic_eoi = 0;
+    lapic_set_eoi();
 
     return;
 }
