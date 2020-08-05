@@ -10,9 +10,10 @@ unsigned long long syscall_puts(char *str) {
 
 unsigned long long
 syscall_handler_internal(SYSCALL syscall_id, unsigned long long arg1, unsigned long long arg2, unsigned long long arg3) {
+    unsigned long long ret;
     if (syscall_id == SYSCALL_PUTS) {
-        syscall_puts((char *)arg1);
+        ret = syscall_puts((char *)arg1);
     }
     lapic_set_eoi();
-    return 0;
+    return ret;
 }

@@ -45,17 +45,26 @@ void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_har
       // puts("end\n");
 
   /* 9 */
-  unsigned long long ret;
-  char *str = "tatsuya\n";
-  asm volatile (
-          "mov %[id], %%rdi\n"
-          "mov %[str], %%rsi\n"
-          "int $0x80\n"
-          "mov %%rax, %[ret]\n"
-          : [ret]"=r"(ret)
-          : [id]"r"((unsigned long long)SYSCALL_PUTS),
-            [str]"m"((unsigned long long)str)
-          );
+      /* kadaiA sample codes */
+      // unsigned long long ret;
+      // char *str = "tatsuya\n";
+      // asm volatile (
+      //         "mov %[id], %%rdi\n"
+      //         "mov %[str], %%rsi\n"
+      //         "int $0x80\n"
+      //         "mov %%rax, %[ret]\n"
+      //         : [ret]"=r"(ret)
+      //         : [id]"r"((unsigned long long)SYSCALL_PUTS),
+      //           [str]"m"((unsigned long long)str)
+      //         );
+
+  /* kadaiB */
+  puts("start\n");
+  void *handler;
+  asm volatile ("lea schedule(%%rip), %[handler]" : [handler]"=r"(handler));
+  lapic_periodic_exec(1000, handler);
+  init_tasks();
+  puts("end\n");
 
   // Do not delete it!
   while (1);

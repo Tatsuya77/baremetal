@@ -1,0 +1,20 @@
+出力結果:
+    START
+    HELLO FROM APP1
+    HELLO FROM APP1
+    HELLO FROM APP1
+    HELLO FROM APP2
+    HELLO FROM APP2
+    HELLO FROM APP2
+    HELLO FROM APP3
+    HELLO FROM APP3
+    HELLO FROM APP3
+    HELLO FROM APP1
+    HELLO FROM APP1
+    HELLO FROM APP2
+    HELLO FROM APP2
+    HELLO FROM APP2
+    ...
+考察:
+    スライド通りに実装した.
+    基本的には課題8のBと同様で,バイナリ分離したappNのプログラムからシステムコールを呼び,ラウンドロビンでスケジュールした.非同期にコンテキストスイッチされている様子を確認できる.

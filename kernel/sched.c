@@ -2,36 +2,11 @@
 #include "util.h"
 #include "lapic_timer.h"
 
-#define STACK_SIZE 1024
 #define TASK_NUM 3
 
-char stack0 [STACK_SIZE];
-char stack1 [STACK_SIZE];
-char stack2 [STACK_SIZE];
-
-static void task0() {
-    while (1) {
-        puts("hello from task0\n");
-        volatile int i = 100000000;
-        while (i--);
-    }
-}
-
-static void task1() {
-    while (1) {
-        puts("hello from task1\n");
-        volatile int i = 100000000;
-        while (i--);
-    }
-}
-
-static void task2() {
-    while (1) {
-        puts("hello from task2\n");
-        volatile int i = 100000000;
-        while (i--);
-    }
-}
+#define APP1_START 0x104000000
+#define APP2_START 0x105000000
+#define APP3_START 0x106000000
 
 struct Task {
     unsigned long long sp;
@@ -81,11 +56,12 @@ static void init_task(int idx, unsigned char *stack_bottom, unsigned long long r
 }
 
 void init_tasks() {
-    init_task(1, (unsigned char *)stack1+STACK_SIZE, (unsigned long long)task1);
-    init_task(2, (unsigned char *)stack2+STACK_SIZE, (unsigned long long)task2);
-    unsigned long long sp0 = (unsigned long long)stack0+STACK_SIZE;
-    asm volatile ("mov %0, %%rsp\n" :: "m"(sp0));
-    task0();
+    init_task(1, (unsigned char *)APP2_START+0x1000000, (unsigned long long)APP2_START);
+    init_task(2, (unsigned char *)APP3_START+0x1000000, (unsigned long long)APP3_START);
+    unsigned long long sp1 = (unsigned long long)APP1_START+0x1000000;
+    unsigned long long rip = APP1_START;
+    asm volatile ("mov %0, %%rsp\n" :: "m"(sp1));
+    asm volatile ("jmp *%0" :: "m"(rip));
 }
 
 void schedule(unsigned long long sp) {

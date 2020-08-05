@@ -9,13 +9,13 @@ all: kernel apps/app1 apps/app2 apps/app3
 kernel: kernel.o   syscall.o interruption.o intr_handler.o lapic_timer.o pm_timer.o sched.o util.o segmentation.o hardware.o port_io.o load_gdt.o font.o
 	ld $(LDFLAGS) -T kernel.ld -o $@ $+
 
-apps/app1: apps/app1.o
+apps/app1: apps/app1.o apps/syscall.o
 	ld $(LDFLAGS) -T apps/app1.ld -o $@ $+
 
-apps/app2: apps/app2.o
+apps/app2: apps/app2.o apps/syscall.o
 	ld $(LDFLAGS) -T apps/app2.ld -o $@ $+
 
-apps/app3: apps/app3.o
+apps/app3: apps/app3.o apps/syscall.o
 	ld $(LDFLAGS) -T apps/app3.ld -o $@ $+
 
 %.o: %.c
