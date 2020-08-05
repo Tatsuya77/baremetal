@@ -32,7 +32,11 @@ unsigned int measure_lapic_freq_khz(void)
     return lapic_timer_freq_khz;
 }
 
-void (*reserved_callback)();
+void (*reserved_callback)(unsigned long long);
+
+void lapic_set_eoi() {
+    *lapic_eoi = 0;
+}
 
 void lapic_periodic_exec(unsigned int msec, void *callback)
 {
@@ -46,11 +50,11 @@ void lapic_periodic_exec(unsigned int msec, void *callback)
     return;
 }
 
-void lapic_intr_handler_internal(void)
+void lapic_intr_handler_internal(unsigned long long arg1)
 {
-    (*reserved_callback)();
+    (*reserved_callback)(arg1);
 
-    *lapic_eoi = 0;
+    lapic_set_eoi();
 
     return;
 }

@@ -1,1 +1,1 @@
-void handler_test(void);
+void init_tasks(void);

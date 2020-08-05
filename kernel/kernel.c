@@ -36,10 +36,11 @@ void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_har
       // puts("\n");
 
   /* 8 */
-  /* kadaiA sample codes */
-  unsigned long long handler;
-  asm volatile ("lea handler_test(%%rip), %[handler]" : [handler]"=r"(handler));
-  lapic_periodic_exec(4000, (void *)handler);
+  puts("start\n");
+  void *handler;
+  asm volatile ("lea schedule(%%rip), %[handler]" : [handler]"=r"(handler));
+  lapic_periodic_exec(1000, handler);
+  init_tasks();
   puts("end\n");
 
   // Do not delete it!
