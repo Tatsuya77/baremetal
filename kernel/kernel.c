@@ -6,6 +6,7 @@
 #include "interruption.h"
 #include "sched.h"
 #include "syscall.h"
+#include "memory.h"
 
 void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_hardware_info) {
   // From here - Put this part at the top of start() function
@@ -59,6 +60,15 @@ void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_har
       //         );
 
   /* kadaiB */
+  // puts("start\n");
+  // void *handler;
+  // asm volatile ("lea schedule(%%rip), %[handler]" : [handler]"=r"(handler));
+  // lapic_periodic_exec(1000, handler);
+  // init_tasks();
+  // puts("end\n");
+
+  /* kadaiC */
+  init_virtual_memory();
   puts("start\n");
   void *handler;
   asm volatile ("lea schedule(%%rip), %[handler]" : [handler]"=r"(handler));

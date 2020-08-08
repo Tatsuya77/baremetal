@@ -1,6 +1,7 @@
 #include "hardware.h"
 #include "util.h"
 #include "lapic_timer.h"
+#include "memory.h"
 
 #define TASK_NUM 3
 
