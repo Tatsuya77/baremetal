@@ -5,34 +5,24 @@
 
 #define TASK_NUM 3
 
-#define APP1_START 0x104000000
-#define APP2_START 0x105000000
-#define APP3_START 0x106000000
+#define APP_START 0x040000000
+
+extern unsigned long long task_cr3s[TASK_NUM];
+extern unsigned long long kernel_cr3;
 
 struct Task {
     unsigned long long sp;
+    unsigned long long cr3;
 };
 
 struct Task tasks[TASK_NUM];
 unsigned int current_task;
 
 static void init_task(int idx, unsigned char *stack_bottom, unsigned long long rip) {
+    asm volatile ("mov %0, %%cr3" :: "r"(task_cr3s[idx]));
+
     unsigned long long *sp = (unsigned long long *)stack_bottom;
     unsigned long long reg64;
-
-    /* failed codes */
-    // asm volatile (
-    //         "mov %%rsp, %0\n"
-    //         "mov %1, %%rsp\n"
-    //         "mov %%ss, %%rax\n"
-    //         "push %%rax\n"
-    //         "push %1\n"
-    //         "pushfq\n"
-    //         "mov %%cs, %%rax\n"
-    //         "push %%rax\n" : "=r"(reg64) : "m"(sp)
-    //         );
-    // asm volatile ("push %0\n" :: "m"(rip));
-    // asm volatile ("mov %0, %%rsp\n" :: "m"(reg64));
 
     /* alternative codes */
     unsigned long long ss;
@@ -46,7 +36,7 @@ static void init_task(int idx, unsigned char *stack_bottom, unsigned long long r
             "pushfq\n" : "=r"(reg64) : "m"(sp)
             );
     sp--;
-    asm volatile ("mov %0, %%rsp\n" :: "m"(reg64));
+    asm volatile ("mov %0, %%rsp" :: "m"(reg64));
     unsigned long long cs;
     asm volatile ("mov %%cs, %0" : "=r"(cs));
     *(sp-1) = cs;
@@ -54,14 +44,18 @@ static void init_task(int idx, unsigned char *stack_bottom, unsigned long long r
 
     sp -= 17;
     tasks[idx].sp = (unsigned long long)sp;
+    tasks[idx].cr3 = task_cr3s[idx];
+
+    asm volatile ("mov %0, %%cr3" :: "r"(kernel_cr3));
 }
 
 void init_tasks() {
-    init_task(1, (unsigned char *)APP2_START+0x1000000, (unsigned long long)APP2_START);
-    init_task(2, (unsigned char *)APP3_START+0x1000000, (unsigned long long)APP3_START);
-    unsigned long long sp1 = (unsigned long long)APP1_START+0x1000000;
-    unsigned long long rip = APP1_START;
-    asm volatile ("mov %0, %%rsp\n" :: "m"(sp1));
+    init_task(1, (unsigned char *)APP_START+0x1000000, (unsigned long long)APP_START);
+    init_task(2, (unsigned char *)APP_START+0x1000000, (unsigned long long)APP_START);
+    unsigned long long sp1 = (unsigned long long)APP_START+0x1000000;
+    unsigned long long rip = APP_START;
+    asm volatile ("mov %0, %%rsp" :: "m"(sp1));
+    asm volatile ("mov %0, %%cr3" :: "r"(task_cr3s[0]));
     asm volatile ("jmp *%0" :: "m"(rip));
 }
 
@@ -70,6 +64,7 @@ void schedule(unsigned long long sp) {
     current_task = (++current_task)%3;
     lapic_set_eoi();
 
+    asm volatile ("mov %0, %%cr3" :: "r"(task_cr3s[current_task]));
     asm volatile (
             "mov %0, %%rsp\n"
             "pop %%r15\n"
