@@ -28,7 +28,7 @@ struct Entry lapic_PT[512]__attribute__((aligned(4096)));
 void init_entry(struct Entry *entry, unsigned long long phys_addr) {
     phys_addr = phys_addr >> 12;
     phys_addr = phys_addr & 0xffffffffff;
-    entry->entry = (phys_addr << 12) | 0b1111;
+    entry->entry = (phys_addr << 12) | 0b11;
 }
 
 void init_virtual_memory() {
@@ -49,20 +49,20 @@ void init_virtual_memory() {
                 init_entry(&PDPs[i][j], (unsigned long long)kernel_PD);
 
             for(unsigned int k=0; k<8; k++) {
-                if (j == (unsigned int) (((0x040000000+k*(2<<21)) >> 21) & 0x1ff))
+                if (j == (unsigned int) (((0x040000000+k*(1<<21)) >> 21) & 0x1ff))
                     init_entry(&PDs[i][j], (unsigned long long)PTs[i][k]);
-                if (j == (unsigned int) (((0x100000000+k*(2<<21)) >> 21) & 0x1ff))
+                if (j == (unsigned int) (((0x100000000+k*(1<<21)) >> 21) & 0x1ff))
                     init_entry(&kernel_PD[j], (unsigned long long)kernel_PTs[k]);
 
-                init_entry(&PTs[i][k][j], 0x104000000 + i*0x1000000 + k*0x200000 + j*0x2000);
-                init_entry(&kernel_PTs[k][j], 0x100000000 + k*0x200000 + j*0x2000);
+                init_entry(&PTs[i][k][j], 0x104000000 + i*0x1000000 + k*0x200000 + j*0x1000);
+                init_entry(&kernel_PTs[k][j], 0x100000000 + k*0x200000 + j*0x1000);
             }
             if (j == (unsigned int) ((0x0c0000000 >> 21) & 0x1ff))
                 init_entry(&io_PD[j], (unsigned long long)fb_PT);
             if (j == (unsigned int) ((0x0fee00000 >> 21) & 0x1ff))
                 init_entry(&io_PD[j], (unsigned long long)lapic_PT);
-            init_entry(&fb_PT[j], 0x0c0000000 + j*0x2000);
-            init_entry(&lapic_PT[j], 0x0fee00000 + j*0x2000);
+            init_entry(&fb_PT[j], 0x0c0000000 + j*0x1000);
+            init_entry(&lapic_PT[j], 0x0fee00000 + j*0x1000);
         }
     }
 }

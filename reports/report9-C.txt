@@ -1,0 +1,20 @@
+出力結果:
+    START
+    HELLO FROM APP1
+    HELLO FROM APP1
+    HELLO FROM APP1
+    HELLO FROM APP2
+    HELLO FROM APP2
+    HELLO FROM APP2
+    HELLO FROM APP3
+    HELLO FROM APP3
+    HELLO FROM APP3
+    HELLO FROM APP1
+    HELLO FROM APP1
+    HELLO FROM APP2
+    HELLO FROM APP2
+    HELLO FROM APP2
+    ...
+考察:
+    スライド通りに実装した.
+    init_taskにおいて,仮想アドレスを指定しているので,仮想記憶が実現できていることがわかる.
