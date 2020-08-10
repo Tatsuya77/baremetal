@@ -6,7 +6,7 @@ all: kernel apps/app1 apps/app2 apps/app3
 	make -C ../
 	make copy
 
-kernel: kernel.o   memory.o syscall.o interruption.o intr_handler.o lapic_timer.o pm_timer.o sched.o util.o segmentation.o hardware.o port_io.o load_gdt.o font.o
+kernel: kernel.o   pci.o memory.o syscall.o interruption.o intr_handler.o lapic_timer.o pm_timer.o sched.o util.o segmentation.o hardware.o port_io.o load_gdt.o font.o
 	ld $(LDFLAGS) -T kernel.ld -o $@ $+
 
 apps/app1: apps/app1.o apps/syscall.o
@@ -24,7 +24,7 @@ apps/app3: apps/app3.o apps/syscall.o
 apps/%.o: apps/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-%.o:%.s
+%.o: %.s
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 qemu: kernel apps/app1 apps/app2 apps/app3
@@ -41,7 +41,8 @@ copy:
 	cp apps/app3 ../fs/
 
 monitor:
-	socat -,echo=0,icanon=0 unix-connect:qemu-monitor-socket
+	# socat -,echo=0,icanon=0 unix-connect:qemu-monitor-socket
+	socat - unix-connect:qemu-monitor-socket
 
 clean:
 	rm -f *.o *apps/*.o apps/app1 apps/app2 apps/app3  kernel

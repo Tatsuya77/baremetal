@@ -7,6 +7,7 @@
 #include "sched.h"
 #include "syscall.h"
 #include "memory.h"
+#include "pci.h"
 
 void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_hardware_info) {
   // From here - Put this part at the top of start() function
@@ -18,6 +19,7 @@ void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_har
   init_frame_buffer(&(hardware_info.fb));
   init_acpi_pm_timer(hardware_info.rsdp);
   init_intr();
+  init_virtual_memory();
 
   measure_lapic_freq_khz();
 
@@ -59,22 +61,24 @@ void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_har
       //           [str]"m"((unsigned long long)str)
       //         );
 
-  /* kadaiB */
-  // puts("start\n");
-  // void *handler;
-  // asm volatile ("lea schedule(%%rip), %[handler]" : [handler]"=r"(handler));
-  // lapic_periodic_exec(1000, handler);
-  // init_tasks();
-  // puts("end\n");
+      /* kadaiB */
+      // puts("start\n");
+      // void *handler;
+      // asm volatile ("lea schedule(%%rip), %[handler]" : [handler]"=r"(handler));
+      // lapic_periodic_exec(1000, handler);
+      // init_tasks();
+      // puts("end\n");
 
-  /* kadaiC */
-  init_virtual_memory();
-  puts("start\n");
-  void *handler;
-  asm volatile ("lea schedule(%%rip), %[handler]" : [handler]"=r"(handler));
-  lapic_periodic_exec(1000, handler);
-  init_tasks();
-  puts("end\n");
+      /* kadaiC */
+      // puts("start\n");
+      // void *handler;
+      // asm volatile ("lea schedule(%%rip), %[handler]" : [handler]"=r"(handler));
+      // lapic_periodic_exec(1000, handler);
+      // init_tasks();
+      // puts("end\n");
+
+  /* 10 */
+  puth(get_nic_base_address(), 8);
 
   // Do not delete it!
   while (1);
