@@ -83,13 +83,29 @@ void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_har
       /* A */
       // puth(get_nic_base_address(), 8);
 
-  /* B */
+      /* B */
+      // puts("start\n");
+      // init_nic(get_nic_base_address());
+      // puts("initialized\n");
+      // char *str = "tatsuya";
+      // send_frame(str, sizeof(str));
+      // puts("finished\n");
+
+  /* C */
   puts("start\n");
-  init_nic(get_nic_base_address());
-  puts("initialized\n");
-  char *str = "tatsuya";
-  send_frame(str, sizeof(str));
-  puts("finished\n");
+  while (1) {
+      volatile unsigned long long j = 100000000;
+      while (j--);
+      char buffer[2048];
+      unsigned short len = receive_frame(buffer);
+      for (unsigned int i=0; i<len; i++) {
+          puth(buffer[i], 2);
+          puts(" ");
+          if ((i+1)%16 == 0) puts("\n");
+          else if ((i+1)%8 == 0) puts(" ");
+      }
+      if (len>0) puts("\n\n");
+  }
 
   // Do not delete it!
   while (1);
