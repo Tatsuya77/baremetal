@@ -78,6 +78,7 @@ void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_har
       // puts("end\n");
 
   /* 10 */
+  init_nic_pci();
   puth(get_nic_base_address(), 8);
 
   // Do not delete it!
