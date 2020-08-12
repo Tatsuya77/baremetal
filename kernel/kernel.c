@@ -8,6 +8,7 @@
 #include "syscall.h"
 #include "memory.h"
 #include "pci.h"
+#include "nic.h"
 
 void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_hardware_info) {
   // From here - Put this part at the top of start() function
@@ -79,10 +80,16 @@ void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_har
       // puts("end\n");
 
   /* 10 */
-  /* A */
-  puth(get_nic_base_address(), 8);
+      /* A */
+      // puth(get_nic_base_address(), 8);
 
   /* B */
+  puts("start\n");
+  init_nic(get_nic_base_address());
+  puts("initialized\n");
+  char *str = "tatsuya";
+  send_frame(str, sizeof(str));
+  puts("finished\n");
 
   // Do not delete it!
   while (1);
