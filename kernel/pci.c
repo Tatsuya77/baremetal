@@ -11,7 +11,7 @@ union PciConfAddress {
     struct {
         unsigned int address;
     }__attribute((packed));
-};
+}__attribute((aligned(4)));
 
 void write_conf_address(unsigned int field);
 unsigned int read_conf_data();

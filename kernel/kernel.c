@@ -20,6 +20,7 @@ void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_har
   init_acpi_pm_timer(hardware_info.rsdp);
   init_intr();
   init_virtual_memory();
+  init_nic_pci();
 
   measure_lapic_freq_khz();
 
@@ -78,8 +79,10 @@ void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_har
       // puts("end\n");
 
   /* 10 */
-  init_nic_pci();
+  /* A */
   puth(get_nic_base_address(), 8);
+
+  /* B */
 
   // Do not delete it!
   while (1);
