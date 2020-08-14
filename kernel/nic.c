@@ -7,7 +7,7 @@
 
 #define TX_DESCRIPTORS_NUM 8
 #define RX_DESCRIPTORS_NUM 8
-#define RX_BUFFER_NUM 1
+#define RX_BUFFER_NUM 1024
 
 struct __attribute__((packed)) TxDescriptor {
     unsigned long long buf_addr;
@@ -67,9 +67,9 @@ static void init_rx() {
     /* RDH */
     set_nic_register(0x2810, (unsigned int) 0);
     /* RDT */
-    set_nic_register(0x2818, (unsigned int) 0);
+    set_nic_register(0x2818, (unsigned int) RX_DESCRIPTORS_NUM-1);
     /* RCTL */
-    set_nic_register(0x400, (unsigned int) 0b011000000000011110);
+    set_nic_register(0x100, (unsigned int) 0b011000000000011110);
 }
 
 void init_nic(unsigned int nic_address) {
@@ -98,11 +98,15 @@ unsigned char send_frame(void *buffer, unsigned short len) {
 
 unsigned short receive_frame(void *buffer) {
     if (((rx_descriptors[rx_current_idx].legacy >> 32) & 0b1) == 1) {
-        *(unsigned char *)buffer = *(unsigned char *)rx_descriptors[rx_current_idx].buf_addr;
         unsigned short ret = rx_descriptors[rx_current_idx].legacy & 0xffff;
+        unsigned char *buf_access;
+        for (unsigned int i=0; i<ret; i++) {
+            buf_access = (unsigned char *) buffer + i;
+            *buf_access = rx_frame_buffers[rx_current_idx][i];
+        }
         /* RDT */
         set_nic_register(0x2818, (unsigned int) (rx_current_idx+1)%RX_DESCRIPTORS_NUM);
-        rx_current_idx++;
+        rx_current_idx = (rx_current_idx + 1) % RX_DESCRIPTORS_NUM;
         return ret;
     } else {
         return 0;
