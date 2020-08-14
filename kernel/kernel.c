@@ -93,6 +93,8 @@ void start(void *SystemTable __attribute__ ((unused)), struct HardwareInfo *_har
 
   /* C */
   puts("start\n");
+  init_nic(get_nic_base_address());
+  puts("initialized\n");
   while (1) {
       volatile unsigned long long j = 100000000;
       while (j--);
